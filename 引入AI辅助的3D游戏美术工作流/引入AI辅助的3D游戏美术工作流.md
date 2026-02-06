@@ -72,3 +72,41 @@
 
 
 ## 进入Blender中工作
+
+新建Blender工程，将刚刚由Tripo AI导出的`FBX`文件导入进来。
+
+在白模中首先检查下是否有破面、面朝向异常等问题：<img src="./check-normal.png" alt="check-normal" style="zoom: 67%;" />
+
+笔者导出的这个模型的尾巴处存在几片法向异常的面*<font color="gray">（4.x版本后只会对异常法向的面标红色）</font>*。
+
+接着切换到UV编辑，看下UV展的效果：
+
+<img src="./unwrap-uv.png" style="zoom: 50%;" />
+
+依旧稀碎......这拆的甚至还不如Blender内置的智能UV。考虑到后续的可维护性，最好还是调整下布线重新拆UV。
+
+调整完后到着色器界面中将各个贴图依次重新烘焙出来以适配新的UV。最好再把贴图都输出到本地作为外部图像引用：
+
+<img src="./BSDF.png" alt="BSDF" style="zoom:50%;" />
+
+确保所有新贴图都无误后，下一步进入到纹理绘制。这里就是需要自己手绘调整各项贴图了：
+
+<img src="./paint_texture.png" alt="paint_texture" style="zoom: 50%;" />
+
+在unity中使用标准的urp材质的话，金属度和光滑度是共用一张贴图的：
+
+<img src="./urp-inspector.png" alt="urp-inspector" style="zoom: 50%; display: inline-block;" /><img src="./rougness-des.png" alt="rougness-des" style="zoom: 50%; display: inline-block;" />
+
+所以需要将着色材质中的金属度和粗糙度贴图进行通道合并。该步骤就是简单的图像操作，既可在PS这种软件中操作也可以在Blender的合成器中操作。笔者建议图像操作也都可以放在Blender中处理；不仅无需切换工作软件，而且合成器这一基于节点编辑器构建的工作流在后期维护也方便得多，随时修改材质贴图后能自动化完成转换贴图的工作：
+
+<img src="./composition.png" alt="composition" style="zoom:67%;" />
+
+至此模型的静态部分完成。
+
+还剩下骨骼制作、绑定和动画的工作了，这几块就需要完全由自己动手了。智能绑骨和动画目前还未找到可用的AI工具，尤其是非人形的生物。如果是人形的动画，可以借助Mixamo网站，这一免费动画平台对于小项目而言也足够了。
+
+![animation](./animation.png)*<font color="gray">制作一个行走和死亡动画</font>*
+
+
+
+## 导入游戏引擎
